@@ -16,7 +16,7 @@ if exists("g:loaded_rst_tables_ftplugin")
 endif
 let loaded_rst_tables_ftplugin = 1
 
-python << endpython
+python3 << endpython
 __PYTHON_SOURCE__
 endpython
 

@@ -42,7 +42,7 @@ def join_rows(rows, sep='\n'):
             field_text = field.strip()
             if field_text:
                 output[i].append(field_text)
-    return map(lambda lines: sep.join(lines), output)
+    return list(map(lambda lines: sep.join(lines), output))
 
 
 def line_is_separator(line):
@@ -62,7 +62,7 @@ def partition_raw_lines(raw_lines):
 
     """
     if not has_line_seps(raw_lines):
-        return map(lambda x: [x], raw_lines)
+        return list(map(lambda x: [x], raw_lines))
 
     curr_part = []
     parts = [curr_part]
@@ -83,7 +83,7 @@ def unify_table(table):
     empty (i.e. all rows have that field empty), the column is removed.
 
     """
-    max_fields = max(map(lambda row: len(row), table))
+    max_fields = max(list(map(lambda row: len(row), table)))
     empty_cols = [True] * max_fields
     output = []
     for row in table:
@@ -121,8 +121,8 @@ def split_table_row(row_string):
 
 def parse_table(raw_lines):
     row_partition = partition_raw_lines(raw_lines)
-    lines = map(lambda row_string: join_rows(map(split_table_row, row_string)),
-                row_partition)
+    lines = list(map(lambda row_string: join_rows(list(map(split_table_row, row_string))),
+                row_partition))
     return unify_table(lines)
 
 
@@ -141,12 +141,12 @@ def table_line(widths, header=False):
 
 
 def get_field_width(field_text):
-    return max(map(lambda s: len(s), field_text.split('\n')))
+    return max(list(map(lambda s: len(s), field_text.split('\n'))))
 
 
 def split_row_into_lines(row):
-    row = map(lambda field: field.split('\n'), row)
-    height = max(map(lambda field_lines: len(field_lines), row))
+    row = list(map(lambda field: field.split('\n'), row))
+    height = max(list(map(lambda field_lines: len(field_lines), row)))
     turn_table = []
     for i in range(height):
         fields = []
@@ -188,7 +188,7 @@ def get_column_widths_from_border_spec(slice):
         left = 1
     if border[-1] == '+':
         right = -1
-    return map(lambda drawing: max(0, len(drawing) - 2), border[left:right].split('+'))
+    return list(map(lambda drawing: max(0, len(drawing) - 2), border[left:right].split('+')))
 
 
 def pad_fields(row, widths):
@@ -196,7 +196,7 @@ def pad_fields(row, widths):
     others.
 
     """
-    widths = map(lambda w: ' %-' + str(w) + 's ', widths)
+    widths = list(map(lambda w: ' %-' + str(w) + 's ', widths))
 
     # Pad all fields using the calculated widths
     new_row = []
@@ -225,7 +225,7 @@ def draw_table(table, manual_widths=None):
         col_widths = manual_widths
 
     # Reserve room for the spaces
-    sep_col_widths = map(lambda x: x + 2, col_widths)
+    sep_col_widths = list(map(lambda x: x + 2, col_widths))
     header_line = table_line(sep_col_widths, header=True)
     normal_line = table_line(sep_col_widths, header=False)
 
